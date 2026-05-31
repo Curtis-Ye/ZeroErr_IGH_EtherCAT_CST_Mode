@@ -31,9 +31,6 @@
 /* 全局主站指针 (各模块通过 extern 访问) */
 ec_master_t *master;
 
-int32_t actPos = 0, targetPos = 0;
-int32_t actTorque = 0, targetTorque = 0;
-
 int main(int argc, char **argv)
 {
     (void)argc;
@@ -115,8 +112,8 @@ int main(int argc, char **argv)
     }
 
     /* ---- 4. 运动控制主循环 ---- */
-    // int32_t actPos = 0, targetPos = 0;
-    // int32_t actTorque = 0, targetTorque = 0;
+    int32_t actPos = 0, targetPos = 0;
+    int32_t actTorque = 0, targetTorque = 0;
     struct timespec wakeupTime, sleepTime;
 
 #ifdef MEASURE_PERF
@@ -129,6 +126,7 @@ int main(int argc, char **argv)
     /* 读取当前位置作为初始目标位置 */
     actPos = EC_READ_S32(domain_pd + offset_actual_position);
     targetPos = actPos;
+    printf("targetPos=%d actPos=%d\n",targetPos,actPos);
 
     while (1)
     {
@@ -152,18 +150,20 @@ int main(int argc, char **argv)
 #endif
 
         /* --- 读取过程数据 --- */
-        actTorque = EC_READ_S32(domain_pd + offset_actual_torque);
+        actTorque = EC_READ_S16(domain_pd + offset_actual_torque);
+        targetTorque = EC_READ_S16(domain_pd + offset_target_torque);
         uint16_t statusWord = EC_READ_U16(domain_pd + offset_statusword);
 
         /* --- CST 驱动状态机 --- */
         uint16_t state = driveStateMachine(statusWord, domain_pd,
                                            offset_controlword,
-                                           offset_target_position,
-                                           &targetTorque);
+                                           offset_target_torque,
+                                           &targetTorque,
+                                           &actPos);
 
         printf("targetTorque=%d actTorque=%d state=0x%04x\n",
                targetTorque, actTorque, state);
-        printf("targetPos=%d actPos=%d\n",targetPos,actPos);
+       // printf("targetPos=%d actPos=%d\n",targetPos,actPos);
 
         /* 队列 & 发送 */
         ecat_cycle_queue_and_send(master, domain);

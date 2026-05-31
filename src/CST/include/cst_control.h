@@ -3,7 +3,8 @@
 #include <stdint.h>
 #include <ecrt.h>
 
-#define K 0.00001
+#define Kp 0.1
+#define Kd 0.001
 
 /* ============================================================
  * csp_control.h — 应用层：CSP 模式驱动控制声明
@@ -52,4 +53,5 @@ uint16_t driveStateMachine(uint16_t statusWord,
                            uint8_t *domain_pd,
                            unsigned int offset_cw,
                            unsigned int offset_target,
-                           int32_t *targetTorque);
+                           int32_t *targetTorque,
+                           int32_t *actPos);
