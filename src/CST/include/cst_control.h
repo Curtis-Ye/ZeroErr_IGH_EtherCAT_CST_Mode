@@ -3,7 +3,7 @@
 #include <stdint.h>
 #include <ecrt.h>
 
-#define K 0.001
+#define K 0.00001
 
 /* ============================================================
  * csp_control.h — 应用层：CSP 模式驱动控制声明

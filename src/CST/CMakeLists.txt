@@ -19,7 +19,7 @@ add_executable(
   src/csp_util.cpp
   src/ecat_config.cpp
   src/ecat_master.cpp
-  src/csp_control.cpp
+  src/cst_control.cpp
 )
 
 target_include_directories(

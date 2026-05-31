@@ -31,6 +31,9 @@
 /* 全局主站指针 (各模块通过 extern 访问) */
 ec_master_t *master;
 
+int32_t actPos = 0, targetPos = 0;
+int32_t actTorque = 0, targetTorque = 0;
+
 int main(int argc, char **argv)
 {
     (void)argc;
@@ -50,7 +53,7 @@ int main(int argc, char **argv)
     if (!master)
         return -1;
 
-    initDrive(master, 0, CSP);
+    initDrive(master, 0, CST);
 
     ec_slave_config_t *sc = ecat_slave_config(master);
     if (!sc)
@@ -112,8 +115,8 @@ int main(int argc, char **argv)
     }
 
     /* ---- 4. 运动控制主循环 ---- */
-    int32_t actPos = 0, targetPos = 0;
-    int32_t actTorque = 0, targetTorque = 0;
+    // int32_t actPos = 0, targetPos = 0;
+    // int32_t actTorque = 0, targetTorque = 0;
     struct timespec wakeupTime, sleepTime;
 
 #ifdef MEASURE_PERF
@@ -160,6 +163,7 @@ int main(int argc, char **argv)
 
         printf("targetTorque=%d actTorque=%d state=0x%04x\n",
                targetTorque, actTorque, state);
+        printf("targetPos=%d actPos=%d\n",targetPos,actPos);
 
         /* 队列 & 发送 */
         ecat_cycle_queue_and_send(master, domain);

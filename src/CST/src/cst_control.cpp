@@ -1,4 +1,4 @@
-#include "csp_control.h"
+#include "cst_control.h"
 #include "ecat_config.h"
 
 #include <stdio.h>
@@ -11,7 +11,8 @@
  * 替换为其他模式（CSV/CST/PP/PV/PT）时，创建对应文件即可
  * ============================================================ */
 
-extern int32_t actPos, targetPos;
+extern int32_t actPos;
+extern int32_t targetPos;
 
 void ODwrite(ec_master_t *master,
              uint16_t slavePos,
@@ -65,7 +66,7 @@ uint16_t driveStateMachine(uint16_t statusWord,
 
         case STATE_SWITCHED_ON:
                 cw = CONTROL_WORD_ENABLE_OPERATION;
-                EC_WRITE_S32(domain_pd + offset_target, 0x00);
+                EC_WRITE_S16(domain_pd + offset_target, 0x00);
                 printf("Switched on, sending enable operation command\n");
                 break;
 
@@ -87,7 +88,7 @@ uint16_t driveStateMachine(uint16_t statusWord,
         if (state == STATE_OPERATION_ENABLED)
         {
                 *targetTorque = K * error;
-                EC_WRITE_S32(domain_pd + offset_target, *targetTorque);
+                EC_WRITE_S16(domain_pd + offset_target, *targetTorque);
         }
 
         return state;
