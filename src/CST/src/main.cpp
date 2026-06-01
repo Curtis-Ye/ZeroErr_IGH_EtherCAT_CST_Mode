@@ -50,7 +50,7 @@ int main(int argc, char **argv)
     if (!master)
         return -1;
 
-    initDrive(master, 0, CST);
+    initDrive(master, 0, CST); //初始化关节模组
 
     ec_slave_config_t *sc = ecat_slave_config(master);
     if (!sc)
@@ -112,7 +112,7 @@ int main(int argc, char **argv)
     }
 
     /* ---- 4. 运动控制主循环 ---- */
-    int32_t actPos = 0, targetPos = 0;
+    int32_t targetPos = 0;
     int32_t actTorque = 0, targetTorque = 0;
     struct timespec wakeupTime, sleepTime;
 
@@ -122,11 +122,6 @@ int main(int argc, char **argv)
 
     sleepTime = cycleTime;
     clock_gettime(CLOCK_MONOTONIC, &wakeupTime);
-
-    /* 读取当前位置作为初始目标位置 */
-    actPos = EC_READ_S32(domain_pd + offset_actual_position);
-    targetPos = actPos;
-    printf("targetPos=%d actPos=%d\n",targetPos,actPos);
 
     while (1)
     {
@@ -158,12 +153,10 @@ int main(int argc, char **argv)
         uint16_t state = driveStateMachine(statusWord, domain_pd,
                                            offset_controlword,
                                            offset_target_torque,
-                                           &targetTorque,
-                                           &actPos);
+                                           &targetTorque);
 
         printf("targetTorque=%d actTorque=%d state=0x%04x\n",
                targetTorque, actTorque, state);
-       // printf("targetPos=%d actPos=%d\n",targetPos,actPos);
 
         /* 队列 & 发送 */
         ecat_cycle_queue_and_send(master, domain);

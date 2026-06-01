@@ -34,6 +34,7 @@ extern uint offset_target_velocity;
 extern uint offset_actual_velocity;
 extern uint offset_target_torque;
 extern uint offset_actual_torque;
+extern uint offset_torque_offset;
 
 /* --- 域注册表 --- */
 extern ec_pdo_entry_reg_t domain1_regs[];

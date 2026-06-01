@@ -3,7 +3,7 @@
 #include <stdint.h>
 #include <ecrt.h>
 
-#define Kp 0.1
+#define Kp 0.01
 #define Kd 0.001
 
 /* ============================================================
@@ -53,5 +53,4 @@ uint16_t driveStateMachine(uint16_t statusWord,
                            uint8_t *domain_pd,
                            unsigned int offset_cw,
                            unsigned int offset_target,
-                           int32_t *targetTorque,
-                           int32_t *actPos);
+                           int32_t *targetTorque);
